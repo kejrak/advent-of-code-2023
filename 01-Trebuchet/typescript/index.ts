@@ -1,5 +1,4 @@
 import fs from "fs"
-import { off } from "process"
 
 function sumOfVisibleNumbers(): number {
     const bff = fs.readFileSync('./input.txt')
