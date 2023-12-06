@@ -11,11 +11,8 @@ class Filter:
         for interval in self.intervals:
             i = list(map(lambda x: int(x), interval.split()))
             d = value - i[1]
-            if d < 0:
-                continue
-            if d > i[2]:
-                continue
-            result = i[0] + d
+            if 0 <= d <= i[2]:
+                return d + i[0]
         return result
 
 def go_thrugh_filters(filters: list[Filter], value: int) -> int:
