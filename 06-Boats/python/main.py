@@ -46,8 +46,8 @@ def useMath(time: list[str], dist: list[str]) -> None:
 
     diff = (int(math.floor(x1)) - int(math.ceil(x2))+1)
     
-    print(diff)
-    
+    print("Second part with clever math:", diff)
+
 def main():
     with open("./input.txt") as f:
         data = f.read()
@@ -57,16 +57,6 @@ def main():
     
     bruteForce(time, dist)
     useMath(time, dist)
-
-
-        
-        
-
-
-
-            
-
-
 
 if __name__ == "__main__":
     main()
