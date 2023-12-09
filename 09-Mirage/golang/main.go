@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -78,13 +79,8 @@ func PartOne(data []string) int {
 		}
 
 		listOfLastValues = IterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-
-		for i, j := 0, len(listOfLastValues)-1; i < j; i, j = i+1, j-1 {
-			listOfLastValues[i], listOfLastValues[j] = listOfLastValues[j], listOfLastValues[i]
-		}
-
+		slices.Reverse(listOfLastValues)
 		listOfLastValues = append(listOfLastValues, intValues[len(intValues)-1])
-
 		getSum := GetSum(listOfLastValues)
 
 		PartOne += getSum
@@ -107,15 +103,9 @@ func PartTwo(data []string) int {
 			intValues[i], _ = strconv.Atoi(s)
 		}
 
-		for i, j := 0, len(intValues)-1; i < j; i, j = i+1, j-1 {
-			intValues[i], intValues[j] = intValues[j], intValues[i]
-		}
-
+		slices.Reverse(intValues)
 		listOfLastValues = IterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-
-		for i, j := 0, len(listOfLastValues)-1; i < j; i, j = i+1, j-1 {
-			listOfLastValues[i], listOfLastValues[j] = listOfLastValues[j], listOfLastValues[i]
-		}
+		slices.Reverse(listOfLastValues)
 
 		listOfLastValues = append(listOfLastValues, intValues[len(intValues)-1])
 
