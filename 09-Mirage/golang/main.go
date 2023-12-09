@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -17,8 +16,8 @@ func getLines(filePath string) ([]string, error) {
 	return lines, err
 }
 
-func GetSum(lastValues []int) int {
-	sum := 0
+func calculateSum(lastValues []int) int {
+	sum := lastValues[0]
 	add := 0
 	i := 0
 
@@ -42,7 +41,7 @@ func checkZeros(values []int) bool {
 	return true
 }
 
-func IterateOverSlice(values []int, lastValue int, lastValues []int) []int {
+func iterateOverSlice(values []int, lastValue int, lastValues []int) []int {
 	var result []int
 
 	if checkZeros(values) {
@@ -62,60 +61,17 @@ func IterateOverSlice(values []int, lastValue int, lastValues []int) []int {
 	lastValue = result[len(result)-1]
 	lastValues = append(lastValues, lastValue)
 
-	return IterateOverSlice(result, lastValue, lastValues)
+	return iterateOverSlice(result, lastValue, lastValues)
 }
 
-func PartOne(data []string) int {
+func reverse(input []int) []int {
+	var output []int
 
-	var PartOne int
-	for _, line := range data {
-		var listOfLastValues []int
-
-		values := strings.Split(line, " ")
-		intValues := make([]int, len(values))
-
-		for i, s := range values {
-			intValues[i], _ = strconv.Atoi(s)
-		}
-
-		listOfLastValues = IterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-		slices.Reverse(listOfLastValues)
-		listOfLastValues = append(listOfLastValues, intValues[len(intValues)-1])
-		getSum := GetSum(listOfLastValues)
-
-		PartOne += getSum
+	for i := len(input) - 1; i >= 0; i-- {
+		output = append(output, input[i])
 	}
 
-	return PartOne
-
-}
-
-func PartTwo(data []string) int {
-
-	var PartTwo int
-	for _, line := range data {
-		var listOfLastValues []int
-
-		values := strings.Split(line, " ")
-		intValues := make([]int, len(values))
-
-		for i, s := range values {
-			intValues[i], _ = strconv.Atoi(s)
-		}
-
-		slices.Reverse(intValues)
-		listOfLastValues = IterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-		slices.Reverse(listOfLastValues)
-
-		listOfLastValues = append(listOfLastValues, intValues[len(intValues)-1])
-
-		getSum := GetSum(listOfLastValues)
-
-		PartTwo += getSum
-	}
-
-	return PartTwo
-
+	return output
 }
 
 func main() {
@@ -125,7 +81,33 @@ func main() {
 		fmt.Print(err)
 	}
 
-	fmt.Printf("Part Two: %d\n", PartOne(data))
-	fmt.Printf("Part Two: %d\n", PartTwo(data))
+	var PartOne int
+	var PartTwo int
+	for _, line := range data {
+		var result1 []int
+		var result2 []int
+
+		values := strings.Split(line, " ")
+		intValues := make([]int, len(values))
+
+		for i, s := range values {
+			intValues[i], _ = strconv.Atoi(s)
+		}
+
+		result1 = iterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
+		result1 = append(result1, intValues[len(intValues)-1])
+
+		result2 = iterateOverSlice(reverse(intValues), intValues[len(intValues)-1], []int{})
+		result2 = append(result2, reverse(intValues)[len(intValues)-1])
+
+		result1Sum := calculateSum(result1)
+		result2Sum := calculateSum(result2)
+
+		PartOne += result1Sum
+		PartTwo += result2Sum
+	}
+
+	fmt.Printf("Part One: %d\n", PartOne)
+	fmt.Printf("Part Two: %d\n", PartTwo)
 
 }
