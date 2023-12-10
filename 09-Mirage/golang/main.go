@@ -48,6 +48,8 @@ func iterateOverSlice(values []int, lastValue int, lastValues []int) []int {
 		return lastValues
 	}
 
+	lastValues = append(lastValues, lastValue)
+
 	i := 0
 
 	for i < len(values)-1 {
@@ -59,7 +61,6 @@ func iterateOverSlice(values []int, lastValue int, lastValues []int) []int {
 	}
 
 	lastValue = result[len(result)-1]
-	lastValues = append(lastValues, lastValue)
 
 	return iterateOverSlice(result, lastValue, lastValues)
 }
@@ -95,11 +96,7 @@ func main() {
 		}
 
 		result1 = iterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-		result1 = append(result1, intValues[len(intValues)-1])
-
-		result2 = iterateOverSlice(reverse(intValues), intValues[len(intValues)-1], []int{})
-		result2 = append(result2, reverse(intValues)[len(intValues)-1])
-
+		result2 = iterateOverSlice(reverse(intValues), reverse(intValues)[len(intValues)-1], []int{})
 		result1Sum := calculateSum(result1)
 		result2Sum := calculateSum(result2)
 
