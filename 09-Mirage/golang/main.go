@@ -1,110 +1,51 @@
-package main
 
-import (
-	"fmt"
-	"os"
-	"strconv"
-	"strings"
-)
+def is_empty_col(grid: list[str], col_idx: int) -> bool:
+    for line in grid:
+        if line[col_idx] != ".":
+            return False
+    return True
 
-func getLines(filePath string) ([]string, error) {
-	readFile, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-	lines := strings.Split(string(readFile), "\n")
-	return lines, err
-}
+def is_empty_row(grid: list[str], row_idx: int) -> bool:
+    row = grid[row_idx]
+    return row == "." * len(row)
 
-func calculateSum(lastValues []int) int {
-	sum := lastValues[0]
-	add := 0
-	i := 0
+def expand_grid(grid: list[str]) -> tuple[set]:
+    empty_cols = set()
+    empty_rows = set()
+    for i, line in enumerate(grid):
+        for j, value in enumerate(line):
+            if is_empty_col(grid, i):
+                empty_cols.add(i)
+            if is_empty_row(grid, j):
+                empty_rows.add(j)
+    return (empty_cols, empty_rows)
 
-	for i < len(lastValues)-1 {
-		add = sum + lastValues[i+1]
-		sum = add
+def get_galaxy_coords(grid: list[str]) -> list[tuple]:
+    result = []
+    for i, line in enumerate(grid):
+        for j, char in enumerate(line):
+            if char == "#":
+                result.append((j, i))
+    return result
 
-		i += 1
-	}
+def get_distance(a: tuple[int], b: tuple[int]) -> int:
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-	return sum
-}
+def get_distance_with_expansions(a: tuple[int], b: tuple[int], C: set[int], R: set[int], alpha = 1) -> int:
+    t = abs(a[0] - b[0]) + len([i for i in C if min(a[0], b[0]) < i < max(a[0], b[0])]) * alpha
+    u = abs(a[1] - b[1]) + len([i for i in R if min(a[1], b[1]) < i < max(a[1], b[1])]) * alpha
+    return t + u 
 
-func checkZeros(values []int) bool {
+def main():
+    grid = open("./input.txt").read().splitlines()
+    C, R = expand_grid(grid)
+    galaxies = get_galaxy_coords(grid)
+    pairs = [(a, b) for idx, a in enumerate(galaxies) for b in galaxies[idx + 1:]]
+    res1 = [get_distance_with_expansions(x[0], x[1], C, R) for x in pairs]
+    res2 = [get_distance_with_expansions(x[0], x[1], C, R, 1_000_000 - 1) for x in pairs]
+    print(sum(res1))
+    print(sum(res2))
 
-	for _, value := range values {
-		if value != 0 {
-			return false
-		}
-	}
-	return true
-}
 
-func iterateOverSlice(values []int, lastValue int, lastValues []int) []int {
-	var result []int
-
-	if checkZeros(values) {
-		return lastValues
-	}
-
-	lastValues = append(lastValues, lastValue)
-
-	i := 0
-
-	for i < len(values)-1 {
-
-		diff := values[i+1] - values[i]
-
-		result = append(result, diff)
-		i += 1
-	}
-
-	lastValue = result[len(result)-1]
-
-	return iterateOverSlice(result, lastValue, lastValues)
-}
-
-func reverse(input []int) []int {
-	var output []int
-
-	for i := len(input) - 1; i >= 0; i-- {
-		output = append(output, input[i])
-	}
-
-	return output
-}
-
-func main() {
-	data, err := getLines("./input.txt")
-
-	if err != nil {
-		fmt.Print(err)
-	}
-
-	var PartOne int
-	var PartTwo int
-	for _, line := range data {
-		var result1 []int
-		var result2 []int
-
-		values := strings.Split(line, " ")
-		intValues := make([]int, len(values))
-
-		for i, s := range values {
-			intValues[i], _ = strconv.Atoi(s)
-		}
-
-		result1 = iterateOverSlice(intValues, intValues[len(intValues)-1], []int{})
-		result2 = iterateOverSlice(reverse(intValues), reverse(intValues)[len(intValues)-1], []int{})
-		result1Sum := calculateSum(result1)
-		result2Sum := calculateSum(result2)
-
-		PartOne += result1Sum
-		PartTwo += result2Sum
-	}
-
-	fmt.Printf("Part One: %d\n", PartOne)
-	fmt.Printf("Part Two: %d\n", PartTwo)
-
-}
+if __name__ == "__main__":
+    main()
