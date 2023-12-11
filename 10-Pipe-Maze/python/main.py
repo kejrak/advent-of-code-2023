@@ -4,7 +4,6 @@ import numpy as np
 
 def polygonArea(vertices):
     x, y = zip(*vertices)
-    print(x, y)
     return 0.5 * abs(
         sum(x[i] * y[i - 1] - x[i - 1] * y[i] for i in range(len(vertices)))
     )
@@ -30,12 +29,17 @@ def lookup_symbols_around(array, start_index):
 
     symbol = get_symbol_at_index(array ,start_index)
 
+    not_allowed_up = ['F', '7', '-']
+    not_allowed_down = ['L', 'J', '-']
+    not_allowed_left = ['|', 'L', 'F']
+    not_allowed_right = ['|', '7', 'J']
+
     if start_index is not None:
         row, col = start_index
-        allowed_symbols_up = [] if symbol == 'F' or symbol == '7' or symbol == '-' else ['|', 'F', '7', 'S']
-        allowed_symbols_down = [] if symbol == 'L' or symbol == 'J' or symbol == '-' else ['|', 'L', 'J', 'S']
-        allowed_symbols_left = [] if symbol == '|' or symbol == 'L' or symbol == 'F' else ['-', 'L', 'F', 'S']
-        allowed_symbols_right = [] if symbol == '|' or symbol == '7' or symbol == 'J' else ['-', 'J', '7', 'S']
+        allowed_symbols_up = [] if symbol in not_allowed_up else ['|', 'F', '7', 'S']
+        allowed_symbols_down = [] if symbol in not_allowed_down else ['|', 'L', 'J', 'S']
+        allowed_symbols_left = [] if symbol in not_allowed_left else ['-', 'L', 'F', 'S']
+        allowed_symbols_right = [] if symbol in not_allowed_right else ['-', 'J', '7', 'S']
         directions_map = {
             'up': (-1, 0, allowed_symbols_up),
             'down': (1, 0, allowed_symbols_down),
